@@ -38,7 +38,7 @@ function validatePayload (payload: string): void {
 function createSignature (pair: KeyringPair, payload: string): void {
   validatePayload(payload);
 
-  const signature = pair.sign(hexToU8a(payload), { withType: true });
+  const signature = pair.sign(hexToU8a(payload));
 
   console.log(`Signature: ${u8aToHex(signature)}`);
   process.exit(0);
