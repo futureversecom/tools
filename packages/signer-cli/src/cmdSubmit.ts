@@ -20,8 +20,26 @@ function watchResult (result: ExtrinsicStatus | ISubmittableResult): void {
 }
 
 export default async function cmdSubmit (account: string, blocks: number | undefined, endpoint = '', tx: string | undefined, [txName, ...params]: string[]): Promise<void> {
-  const api = await ApiPromise.create({ provider: new WsProvider(endpoint) });
+//  const api = await ApiPromise.create({ provider: new WsProvider(endpoint) });
 
+  const types = {
+    VersionedEventProof: {
+      _enum: {
+        sentinel: null,
+        EventProof: "EventProof",
+      },
+    },
+    EthyId: "[u8; 32]",
+    EthyEventId: "u64",
+    AccountId: 'EthereumAccountId',
+    AccountId20: 'EthereumAccountId',
+    AccountId32: 'EthereumAccountId',
+    Address: 'AccountId',
+    LookupSource: 'AccountId',
+    Lookup0: 'AccountId',
+  };
+  const provider = new WsProvider('ws://127.0.0.1:9944/');
+  const api = await ApiPromise.create({ provider, types: types });
   if (tx) {
     await api.rpc.author.submitAndWatchExtrinsic(api.createType('Extrinsic', tx), watchResult);
 
