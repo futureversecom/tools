@@ -9,7 +9,7 @@ import { Keyring } from '@polkadot/keyring';
 import { assert, hexToU8a, isHex, u8aToHex } from '@polkadot/util';
 import { cryptoWaitReady, keyExtractSuri, mnemonicValidate } from '@polkadot/util-crypto';
 
-type Curves = 'ed25519' | 'sr25519' | 'ecdsa';
+type Curves = 'ed25519' | 'sr25519' | 'ecdsa' | 'ethereum';
 
 const SEED_LENGTHS = [12, 15, 18, 21, 24];
 
@@ -49,8 +49,10 @@ export default async function cmdSign (_: string, suri = '', type: Curves, [payl
 
   await cryptoWaitReady();
 
-  const keyring = new Keyring({ type });
-  const pair = keyring.createFromUri(suri);
+  const keyring = new Keyring({ type: "ethereum" });
+  // const pair = keyring.createFromUri(suri);
+  const pair = keyring.addFromSeed(hexToU8a(suri));
+  console.log('Singer::',pair.address);
 
   if (!payload) {
     const rl = readline.createInterface({
